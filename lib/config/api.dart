@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 late final dio = Dio(); // With default `Options`.
-const BaseUrl  = 'https://jsonplaceholder.typicode.com/';
+const BaseUrl  = 'http://localhost:8000';
 void configureDio() {
   print("initializing dio");
   // Set default configs
