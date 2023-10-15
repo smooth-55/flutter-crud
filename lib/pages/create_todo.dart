@@ -1,3 +1,4 @@
+import 'package:crud/services/todo.dart';
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:crud/config/api.dart';
@@ -19,19 +20,24 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
       var title = titleController.text;
       var desc = descriptionController.text;
       try {
-        final res = await dio
-            .post("/users/todos", data: {"title": title, "description": desc});
+        Object? data = {
+          "title": title,
+          "description": desc
+        };
+        final res = await createTodo(data);
         if (res.statusCode == 201) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Data saved')),
+
           );
+          Navigator.pushNamed(context, "/");
         }
       } catch (e) {
+        print(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data saved')),
+          const SnackBar(content: Text('Something went wrong')),
         );
       }
-      Navigator.pushNamed(context, '/');
     }
   }
 
@@ -88,10 +94,10 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.add),
+                          Icon(Icons.add, color: Colors.white),
                           Text(
                             "Create",
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                         ],
                       ),

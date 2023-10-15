@@ -1,5 +1,5 @@
 import 'package:crud/components/tile.dart';
-import 'package:crud/config/api.dart';
+import 'package:crud/services/todo.dart';
 import 'package:crud/models/todo.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +23,7 @@ class _TodoListState extends State<TodoList> {
 
   _getData() async {
     try {
-      String url = "/users/todos";
-      final res = await dio.get(url);
+      final res = await getTodo();
       if (res.statusCode == 200) {
         Map<String, dynamic> resp = res.data;
         var obj = TodosModel.fromJson(resp);
@@ -46,7 +45,6 @@ class _TodoListState extends State<TodoList> {
         // title: Text("Todos", style: TextStyle(color: Color.fromRGBO(189, 219, 208, 1)),),
         title: Text("Todos", style: TextStyle(color: Colors.white),),
         elevation: 0,
-        backgroundColor: Color.fromRGBO(81, 75, 35, 1),
       ),
       body: _isLoading
           ? const Center(
