@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-
+import 'package:crud/config/api.dart';
 
 class CreateTodoForm extends StatefulWidget {
   const CreateTodoForm({super.key});
@@ -11,14 +11,27 @@ class CreateTodoForm extends StatefulWidget {
 
 class _CreateTodoFormState extends State<CreateTodoForm> {
   final _key_create_form = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
-  void create_todo() {
+  void create_todo(BuildContext context) async {
     if (_key_create_form.currentState!.validate()) {
-      // If the form is valid, display a snackbar. In the real world,
-      // you'd often call a server or save the information in a database.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Processing Data')),
-      );
+      var title = titleController.text;
+      var desc = descriptionController.text;
+      try {
+        final res = await dio
+            .post("/users/todos", data: {"title": title, "description": desc});
+        if (res.statusCode == 201) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Data saved')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data saved')),
+        );
+      }
+      Navigator.pushNamed(context, '/');
     }
   }
 
@@ -37,8 +50,10 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextFormField(
+                  controller: titleController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: FormBuilderValidators.required(errorText: "*required"),
+                  validator:
+                      FormBuilderValidators.required(errorText: "*required"),
                   decoration: InputDecoration(
                     labelText: "Title",
                     border: OutlineInputBorder(
@@ -52,6 +67,7 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
                 TextFormField(
                   minLines: 3,
                   maxLines: 3,
+                  controller: descriptionController,
                   textAlign: TextAlign.start,
                   decoration: InputDecoration(
                     labelText: "Description",
@@ -64,7 +80,9 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
                   height: 10,
                 ),
                 ElevatedButton(
-                    onPressed: create_todo,
+                    onPressed: () {
+                      create_todo(context);
+                    },
                     child: const Padding(
                       padding: EdgeInsets.all(13),
                       child: Row(
