@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+
 
 class CreateTodoForm extends StatefulWidget {
   const CreateTodoForm({super.key});
@@ -36,12 +38,7 @@ class _CreateTodoFormState extends State<CreateTodoForm> {
               children: [
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '*required';
-                    }
-                    return null;
-                  },
+                  validator: FormBuilderValidators.required(errorText: "*required"),
                   decoration: InputDecoration(
                     labelText: "Title",
                     border: OutlineInputBorder(
