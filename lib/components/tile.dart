@@ -1,23 +1,34 @@
+import 'package:crud/services/todo.dart';
 import 'package:flutter/material.dart';
 
+import '../models/todo.dart';
+
 class TodoTile extends StatelessWidget {
-  final int? id;
-  final String? title;
-  final bool? status;
-  final String? item;
+  late Datum? todo;
 
   TodoTile({
     super.key,
-    this.id,
-    this.title,
-    this.status,
-    this.item,
+    this.todo,
   });
+
+  _updateTodo(context) async {
+    try {
+      Object? val = {"id": todo?.id, "is_completed": !todo!.isCompleted};
+      final res = await updateTodo(todo!.id, val);
+      if (res.statusCode == 200) {
+        var status = todo!.isCompleted ? "Completed" : "Pending";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Marked as $status")),
+        );
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      
       children: [
         Container(
           height: 100,
@@ -27,14 +38,23 @@ class TodoTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(15)),
           child: Row(
             children: [
-              Checkbox(value: status, onChanged: (bool? v) {}, shape: StadiumBorder(),),
+              Checkbox(
+                value: todo?.isCompleted,
+                onChanged: (bool? v) {
+                  _updateTodo(context);
+                },
+                shape: StadiumBorder(),
+              ),
               Flexible(
                 child: Text(
-                  title ?? "",
+                  todo?.title ?? "",
                   textDirection: TextDirection.ltr,
                   style: TextStyle(
-                    fontSize: 16,
-                  ),
+                      fontSize: 18,
+                      color: todo!.isCompleted ? Colors.grey : Colors.black,
+                      decoration: todo!.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null),
                 ),
               )
             ],
