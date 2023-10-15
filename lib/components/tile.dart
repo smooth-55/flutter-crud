@@ -13,10 +13,15 @@ class TodoTile extends StatelessWidget {
 
   _updateTodo(context) async {
     try {
-      Object? val = {"id": todo?.id, "is_completed": !todo!.isCompleted};
+      Object? val = {
+        "id": todo?.id,
+        "is_completed": !todo!.isCompleted,
+        "title": todo!.title,
+        "description": todo?.description,
+      };
       final res = await updateTodo(todo!.id, val);
       if (res.statusCode == 200) {
-        var status = todo!.isCompleted ? "Completed" : "Pending";
+        var status = !todo!.isCompleted ? "Completed" : "Pending";
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Marked as $status")),
         );
