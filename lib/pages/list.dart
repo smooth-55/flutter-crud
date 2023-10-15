@@ -42,8 +42,10 @@ class _TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: Text("Todos", style: TextStyle(color: Color.fromRGBO(189, 219, 208, 1)),),
-        title: Text("Todos", style: TextStyle(color: Colors.white),),
+        title: Text(
+          "Todos",
+          style: TextStyle(color: Colors.white),
+        ),
         elevation: 0,
       ),
       body: _isLoading
@@ -56,22 +58,22 @@ class _TodoListState extends State<TodoList> {
                   itemCount: todos!.data?.length,
                   itemBuilder: (context, index) {
                     if (!_isLoading) {
-                      return  TodoTile(
-                        id: todos!.data[index].id,
-                        title: todos!.data[index].title,
-                        status: todos!.data[index].isCompleted,
+                      return TodoTile(
+                        todo: todos!.data[index],
                       );
-                    }else{
+                    } else {
                       return Container();
                     }
-
                   }),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/create-todo');
         },
-        child: Icon(Icons.add, color: Colors.white,),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
