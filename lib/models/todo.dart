@@ -1,36 +1,69 @@
 // To parse this JSON data, do
 //
+//     final todosModel = todosModelFromJson(jsonString);
 
 import 'dart:convert';
 
-List<Todo> todoFromJson(String str) => List<Todo>.from(json.decode(str).map((x) => Todo.fromJson(x)));
+TodosModel todosModelFromJson(String str) => TodosModel.fromJson(json.decode(str));
 
-String todoToJson(List<Todo> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String todosModelToJson(TodosModel data) => json.encode(data.toJson());
 
-class Todo {
-  int userId;
-  int id;
-  String title;
-  bool completed;
+class TodosModel {
+  List<Datum> data;
+  int count;
 
-  Todo({
-    required this.userId,
-    required this.id,
-    required this.title,
-    required this.completed,
+  TodosModel({
+    required this.data,
+    required this.count,
   });
 
-  factory Todo.fromJson(Map<String, dynamic> json) => Todo(
-    userId: json["userId"],
-    id: json["id"],
-    title: json["title"],
-    completed: json["completed"],
+  factory TodosModel.fromJson(Map<String, dynamic> json) => TodosModel(
+    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+    count: json["count"],
   );
 
   Map<String, dynamic> toJson() => {
-    "userId": userId,
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+    "count": count,
+  };
+}
+
+class Datum {
+  int id;
+  DateTime createdAt;
+  DateTime updatedAt;
+  dynamic deletedAt;
+  String title;
+  String description;
+  bool isCompleted;
+
+  Datum({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.deletedAt,
+    required this.title,
+    required this.description,
+    required this.isCompleted,
+  });
+
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    id: json["id"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    deletedAt: json["deleted_at"],
+    title: json["title"],
+    description: json["description"],
+    isCompleted: json["is_completed"],
+  );
+
+  Map<String, dynamic> toJson() => {
     "id": id,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+    "deleted_at": deletedAt,
     "title": title,
-    "completed": completed,
+    "description": description,
+    "is_completed": isCompleted,
   };
 }
