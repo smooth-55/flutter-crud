@@ -19,18 +19,19 @@ class _TodoListState extends State<TodoList> {
     _getData();
   }
 
-  List<Todo>? todos;
+  late TodosModel todos;
 
   _getData() async {
     try {
-      String url = "/todos";
+      String url = "/users/todos";
       final res = await dio.get(url);
       if (res.statusCode == 200) {
-        List<dynamic> resp = res.data;
-        List<Todo> todoList = resp.map((data) => Todo.fromJson(data)).toList();
-        todos = todoList;
+        Map<String, dynamic> resp = res.data;
+        var obj = TodosModel.fromJson(resp);
         _isLoading = false;
-        setState(() {});
+        setState(() {
+          todos = obj;
+        });
       }
     } catch (e) {
       _isLoading = false;
@@ -54,13 +55,13 @@ class _TodoListState extends State<TodoList> {
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
-                  itemCount: todos?.length,
+                  itemCount: todos!.data?.length,
                   itemBuilder: (context, index) {
                     if (!_isLoading) {
                       return  TodoTile(
-                        id: todos?[index].id,
-                        title: todos?[index].title,
-                        status: todos?[index].completed,
+                        id: todos!.data[index].id,
+                        title: todos!.data[index].title,
+                        status: todos!.data[index].isCompleted,
                       );
                     }else{
                       return Container();
